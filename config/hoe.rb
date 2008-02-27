@@ -1,10 +1,10 @@
 require 'ruby_screen/version'
 
-AUTHOR = 'FIXME full name'  # can also be an array of Authors
-EMAIL = "FIXME email"
-DESCRIPTION = "description of gem"
-GEM_NAME = 'ruby_screen' # what ppl will type to install your gem
-RUBYFORGE_PROJECT = 'ruby_screen' # The unix name for your project
+AUTHOR = 'Don Petersen'  # can also be an array of Authors
+EMAIL = "don@donpetersen.net"
+DESCRIPTION = "Ruby command line utility to manage GNU Screen configurations, and launch Screen using those configuration."
+GEM_NAME = 'ruby-screen' # what ppl will type to install your gem
+RUBYFORGE_PROJECT = 'ruby-screen' # The unix name for your project
 HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
 DOWNLOAD_PATH = "http://rubyforge.org/projects/#{RUBYFORGE_PROJECT}"
 
