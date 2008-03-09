@@ -5,3 +5,5 @@ rescue LoadError
   gem 'rspec'
   require 'spec'
 end
+
+require 'lib/ruby_screen'

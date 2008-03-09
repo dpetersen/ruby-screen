@@ -1,7 +1,8 @@
 $:.unshift File.dirname(__FILE__)
+require 'preferences_loader'
 
 module RubyScreen
   def self.process(arguments)
-    puts "hello world"
+    PreferencesLoader.load
   end
 end
