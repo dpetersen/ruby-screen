@@ -1,0 +1,5 @@
+require File.dirname(__FILE__) + '/../lib/ruby_screen'
+
+RubyScreen.process ARGV
+
+# vim: syntax=Ruby

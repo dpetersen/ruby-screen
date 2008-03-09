@@ -3,6 +3,7 @@ License.txt
 Manifest.txt
 README.txt
 Rakefile
+bin/ruby-screen
 config/hoe.rb
 config/requirements.rb
 lib/ruby_screen.rb
