@@ -15,9 +15,9 @@ describe RubyScreen do
     RubyScreen::PreferencesLoader.stub!(:load).and_return(preferences_hash)
 
     arguments = mock("mock passed-in arguments")
-    mock_generator = mock("mock ConfigurationGenerator")
+    mock_generator = mock("mock Configuration::Generator")
     mock_generator.should_receive(:generate)
-    RubyScreen::ConfigurationGenerator.should_receive(:new).with(arguments, preferences_hash).and_return(mock_generator)
+    RubyScreen::Configuration::Generator.should_receive(:new).with(arguments, preferences_hash).and_return(mock_generator)
     process(arguments)
   end
 end

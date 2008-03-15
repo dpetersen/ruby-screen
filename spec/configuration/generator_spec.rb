@@ -1,13 +1,13 @@
-require File.dirname(__FILE__) + '/spec_helper.rb'
+require File.dirname(__FILE__) + '/../spec_helper.rb'
 
-describe RubyScreen::ConfigurationGenerator do
+describe RubyScreen::Configuration::Generator do
   before do
     @mock_configuration = mock("mock Configuration")
-    RubyScreen::Configuration.should_receive(:new).and_return(@mock_configuration)
+    RubyScreen::Configuration::Description.should_receive(:new).and_return(@mock_configuration)
   end
 
   def generate(hash, arguments = [])
-    RubyScreen::ConfigurationGenerator.new(arguments, hash).generate
+    RubyScreen::Configuration::Generator.new(arguments, hash).generate
   end
 
   it "should handle a simple customization" do

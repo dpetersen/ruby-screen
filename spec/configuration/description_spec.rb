@@ -1,7 +1,7 @@
-require File.dirname(__FILE__) + '/spec_helper.rb'
+require File.dirname(__FILE__) + '/../spec_helper.rb'
 
-describe RubyScreen::Configuration do
-  before { @configuration = RubyScreen::Configuration.new }
+describe RubyScreen::Configuration::Description do
+  before { @configuration = RubyScreen::Configuration::Description.new }
 
   describe "customizations" do
     it "should be able to be added and retrieved" do

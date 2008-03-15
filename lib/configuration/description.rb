@@ -1,5 +1,5 @@
-module RubyScreen
-  class Configuration
+module RubyScreen::Configuration
+  class Description
     attr_reader :customizations, :numbered_windows, :numberless_windows
     attr_accessor :initial_directory, :shell_executable
 

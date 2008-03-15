@@ -1,8 +1,8 @@
-module RubyScreen
-  class ConfigurationGenerator
+module RubyScreen::Configuration
+  class Generator
     def initialize(arguments, preferences_hash)
       @arguments, @preferences_hash = arguments, preferences_hash
-      @configuration = Configuration.new
+      @configuration = Description.new
 
       Hash.class_eval { include PreferencesHashMethods }
     end
@@ -29,7 +29,7 @@ module RubyScreen
     end
 
     def process_configuration_block(configuration_block)
-      ConfigurationBlockParser.new(
+      BlockParser.new(
         clear_nested_configurations(configuration_block),
         @configuration)
     end
@@ -51,7 +51,7 @@ module RubyScreen
     end
   end
 
-  class ConfigurationBlockParser
+  class BlockParser
     def initialize(preferences_hash, configuration)
       @preferences_hash, @configuration = preferences_hash, configuration
 
