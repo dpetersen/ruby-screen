@@ -8,44 +8,59 @@ module RubyScreen
     end
 
     def generate
-      settings_array = [@preferences_hash]
-      non_nested_arguments = []
-
-      @arguments.each do |argument|
-        if @preferences_hash.has_nested_configuration?(argument)
-          nested_configuration = @preferences_hash[argument]
-          settings_array << nested_configuration
-          @preferences_hash = nested_configuration
-        else non_nested_arguments << argument
-        end
-      end
-
-      settings_array.each do |settings_hash|
-        @preferences_hash = clear_nested_configurations(settings_hash)
-
-        extract_special_settings
-        extract_windows
-        add_customizations
-      end
-
-      unless non_nested_arguments.empty?
-        initial_directory = @configuration.initial_directory
-        joined_arguments = non_nested_arguments.join("/")
-        if initial_directory && initial_directory.split("").last == "/"
-          @configuration.initial_directory = initial_directory + joined_arguments
-        elsif initial_directory
-          @configuration.initial_directory = initial_directory + "/" + joined_arguments
-        else
-          @configuration.initial_directory = joined_arguments
-        end
-      end
+      recurse_preferences_hash_with_attributes
+      include_extra_arguments_as_directories(@arguments) unless @arguments.empty?
     end
 
     protected
 
+    def recurse_preferences_hash_with_attributes
+      @arguments.unshift nil #TODO: I should sort this out at some point, this is ridiculous
+
+      begin
+        @arguments.shift
+        process_configuration_block(@preferences_hash)
+
+        if @preferences_hash.has_nested_configuration?(@arguments.first)
+          @preferences_hash = @preferences_hash[@arguments.first]
+        else break
+        end
+      end until @arguments.empty?
+    end
+
+    def process_configuration_block(configuration_block)
+      ConfigurationBlockParser.new(
+        clear_nested_configurations(configuration_block),
+        @configuration)
+    end
+
     def clear_nested_configurations(hash)
       hash.reject { |k,v| v.is_a?(Hash) }
     end
+
+    def include_extra_arguments_as_directories(non_nested_arguments)
+      initial_directory = @configuration.initial_directory
+      joined_arguments = non_nested_arguments.join("/")
+      if initial_directory && initial_directory.split("").last == "/"
+        @configuration.initial_directory = initial_directory + joined_arguments
+      elsif initial_directory
+        @configuration.initial_directory = initial_directory + "/" + joined_arguments
+      else
+        @configuration.initial_directory = joined_arguments
+      end
+    end
+  end
+
+  class ConfigurationBlockParser
+    def initialize(preferences_hash, configuration)
+      @preferences_hash, @configuration = preferences_hash, configuration
+
+      extract_special_settings
+      extract_windows
+      add_customizations
+    end
+
+    protected
 
     def extract_special_settings
       ["initial_directory", "shell_executable"].each { |setting| extract_special_setting(setting) }
