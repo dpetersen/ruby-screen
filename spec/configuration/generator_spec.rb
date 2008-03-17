@@ -10,6 +10,10 @@ describe RubyScreen::Configuration::Generator do
     RubyScreen::Configuration::Generator.new(arguments, hash).generate
   end
 
+  it "should return a Configuration::Description" do
+    generate({}).should equal(@mock_configuration)
+  end
+
   it "should handle a simple customization" do
     @mock_configuration.should_receive(:add_customization).with("startup_message", "off")
     generate({ "startup_message" => "off" })
