@@ -2,10 +2,14 @@ require 'yaml'
 
 module RubyScreen
   class PreferencesLoader
-    DEFAULT_PREFERENCES_FILE = "$HOME/.ruby-screen.yml"
-
     def self.load
-      YAML.load_file(DEFAULT_PREFERENCES_FILE)
+      YAML.load_file(default_preferences_file)
+    end
+
+    protected
+
+    def self.default_preferences_file
+      "#{ENV['HOME']}/.ruby-screen.yml"
     end
   end
 end
