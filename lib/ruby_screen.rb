@@ -1,7 +1,7 @@
 $:.unshift File.dirname(__FILE__)
-require 'preferences_loader'
+require 'ruby_screen/preferences_loader'
 
-%w[description generator executer].each { |f| require "configuration/#{f}" }
+%w[description generator executer].each { |f| require "ruby_screen/configuration/#{f}" }
 
 module RubyScreen
   def self.process(arguments)
