@@ -8,10 +8,10 @@ config/hoe.rb
 config/requirements.rb
 lib/ruby_screen.rb
 lib/ruby_screen/version.rb
-lib/preferences_loader.rb
-lib/configuration/description.rb
-lib/configuration/executer.rb
-lib/configuration/generator.rb
+lib/ruby_screen/preferences_loader.rb
+lib/ruby_screen/configuration/description.rb
+lib/ruby_screen/configuration/executer.rb
+lib/ruby_screen/configuration/generator.rb
 log/debug.log
 script/destroy
 script/generate
