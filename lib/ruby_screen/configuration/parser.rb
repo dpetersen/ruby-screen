@@ -1,11 +1,11 @@
 module RubyScreen::Configuration
-  class Generator
+  class Parser
     def initialize(arguments, preferences_hash)
       @iterator = Iterator.new(arguments, preferences_hash)
       @description = Description.new
     end
 
-    def generate
+    def parse
       @iterator.each_applicable_configuration_block { |block| BlockParser.new(block, @description) }
       include_extra_arguments_as_directories unless @iterator.arguments.empty?
 
