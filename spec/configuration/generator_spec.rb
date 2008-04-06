@@ -22,8 +22,7 @@ describe RubyScreen::Configuration::Generator do
   it "should separate customizations and special settings" do
     @mock_configuration.should_receive(:add_customization).with("startup_message", "off")
     @mock_configuration.should_receive(:initial_directory=).with("~/something")
-    @mock_configuration.should_receive(:shell_executable=).with("zsh")
-    generate({ "startup_message" => "off", "initial_directory" => "~/something", "shell_executable" => "zsh" })
+    generate({ "startup_message" => "off", "initial_directory" => "~/something" })
   end
 
   it "should handle windows" do

@@ -25,11 +25,6 @@ describe RubyScreen::Configuration::Description do
     @configuration.initial_directory.should eql("/my/dir/")
   end
 
-  it "should be able to set shell executable" do
-    @configuration.shell_executable = "zsh"
-    @configuration.shell_executable.should eql("zsh")
-  end
-
   describe "windows" do
     it "should be able to add numberless windows" do
       @configuration.add_window(:title => "server window", :command => "script/server")

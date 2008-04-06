@@ -65,7 +65,7 @@ module RubyScreen::Configuration
     protected
 
     def extract_special_settings
-      ["initial_directory", "shell_executable"].each { |setting| extract_special_setting(setting) }
+      ["initial_directory"].each { |setting| extract_special_setting(setting) }
     end
 
     def extract_special_setting(setting)
