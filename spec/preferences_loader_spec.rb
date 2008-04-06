@@ -12,5 +12,10 @@ describe RubyScreen::PreferencesLoader do
     ENV["HOME"] = original_home
   end
 
-  it "should display a helpful error message when the default file cannot be loaded"
+  it "should display a helpful error message when the default file cannot be loaded" do
+    Kernel.should_receive(:abort).with(an_instance_of(String))
+    YAML.should_receive(:load_file).and_raise("not want!")
+
+    RubyScreen::PreferencesLoader.load
+  end
 end
