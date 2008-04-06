@@ -2,22 +2,22 @@ module RubyScreen::Configuration
   class Generator
     def initialize(arguments, preferences_hash)
       @iterator = Iterator.new(arguments, preferences_hash)
-      @configuration = Description.new
+      @description = Description.new
     end
 
     def generate
-      @iterator.each_applicable_configuration_block { |block| BlockParser.new(block, @configuration) }
+      @iterator.each_applicable_configuration_block { |block| BlockParser.new(block, @description) }
       include_extra_arguments_as_directories unless @iterator.arguments.empty?
 
-      @configuration
+      @description
     end
 
     protected
 
     def include_extra_arguments_as_directories
-      initial_directory = @configuration.initial_directory || ""
+      initial_directory = @description.initial_directory || ""
       initial_directory << "/" unless initial_directory.empty? || initial_directory[-1].chr == "/"
-      @configuration.initial_directory = initial_directory + @iterator.arguments.join("/")
+      @description.initial_directory = initial_directory + @iterator.arguments.join("/")
     end
   end
 
@@ -54,8 +54,8 @@ module RubyScreen::Configuration
   end
 
   class BlockParser
-    def initialize(preferences_hash, configuration)
-      @preferences_hash, @configuration = preferences_hash, configuration
+    def initialize(preferences_hash, description)
+      @preferences_hash, @description = preferences_hash, description
 
       extract_special_settings
       extract_windows
@@ -72,19 +72,19 @@ module RubyScreen::Configuration
       if @preferences_hash.has_key?(setting)
         setter_method = "#{setting}=".to_sym
         setting_value = @preferences_hash.delete(setting)
-        @configuration.send(setter_method, setting_value)
+        @description.send(setter_method, setting_value)
       end
     end
 
     def extract_windows
       if @preferences_hash.has_key?("windows")
-        @preferences_hash["windows"].each { |w| @configuration.add_window(w) }
+        @preferences_hash["windows"].each { |w| @description.add_window(w) }
         @preferences_hash.delete("windows")
       end
     end
 
     def add_customizations
-      @preferences_hash.each { |k, v| @configuration.add_customization(k, v) }
+      @preferences_hash.each { |k, v| @description.add_customization(k, v) }
     end
   end
 end
