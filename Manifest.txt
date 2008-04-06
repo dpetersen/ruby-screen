@@ -9,8 +9,9 @@ config/requirements.rb
 lib/ruby_screen.rb
 lib/ruby_screen/version.rb
 lib/ruby_screen/preferences_loader.rb
+lib/ruby_screen/executer.rb
 lib/ruby_screen/configuration/description.rb
-lib/ruby_screen/configuration/executer.rb
+lib/ruby_screen/configuration/parser.rb
 lib/ruby_screen/configuration/generator.rb
 log/debug.log
 script/destroy
@@ -19,8 +20,9 @@ script/txt2html
 setup.rb
 spec/ruby_screen_spec.rb
 spec/preferences_loader_spec.rb
+spec/executer_spec.rb
 spec/configuration/description_spec.rb
-spec/configuration/executer_spec.rb
+spec/configuration/parser_spec.rb
 spec/configuration/generator_spec.rb
 spec/spec.opts
 spec/spec_helper.rb

@@ -17,6 +17,10 @@ module RubyScreen::Configuration
       options.include?(:number) ? add_numbered_window(options) : add_numberless_window(options)
     end
 
+    def to_screen_configuration
+      Generator.new(self).to_screen_configuration
+    end
+
     protected
 
     def add_numberless_window(options)

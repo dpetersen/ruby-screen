@@ -3,6 +3,14 @@ require File.dirname(__FILE__) + '/../spec_helper.rb'
 describe RubyScreen::Configuration::Description do
   before { @configuration = RubyScreen::Configuration::Description.new }
 
+  it "should delegate #to_screen_configuration to Configuration::Generator" do
+    configuration_string = "my configuration string"
+    generator_mock = mock("mock Configuration::Generator")
+    generator_mock.should_receive(:to_screen_configuration).and_return(configuration_string)
+    RubyScreen::Configuration::Generator.should_receive(:new).and_return(generator_mock)
+    @configuration.to_screen_configuration.should equal(configuration_string)
+  end
+
   describe "customizations" do
     it "should be able to be added and retrieved" do
       @configuration.add_customization(:startup_message, "off")

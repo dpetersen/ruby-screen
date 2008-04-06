@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/spec_helper.rb'
 
 describe RubyScreen do
   before do
-    RubyScreen::Configuration::Executer.stub!(:new) # don't want it to actually call Kernel#exec!
+    RubyScreen::Executer.stub!(:new) # don't want it to actually call Kernel#exec!
   end
 
   def process(arguments = [])
@@ -31,7 +31,7 @@ describe RubyScreen do
     mock_configuration = mock("Mock Configuration::Description")
     mock_parser.stub!(:parse).and_return(mock_configuration)
     RubyScreen::Configuration::Parser.stub!(:new).and_return(mock_parser)
-    RubyScreen::Configuration::Executer.should_receive(:new).with(mock_configuration)
+    RubyScreen::Executer.should_receive(:new).with(mock_configuration)
     process
   end
 end
