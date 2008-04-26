@@ -84,7 +84,18 @@ module RubyScreen::Configuration
     end
 
     def add_customizations
-      @preferences_hash.each { |k, v| @description.add_customization(k, v) }
+      @preferences_hash.each do |k, v|
+        # Necessary because YAML load takes values line 'on' or 'off' that aren't quoted and turn them into booleans
+        if is_a_boolean?(v)
+          v = (v ? "on" : "off")
+        end
+
+        @description.add_customization(k, v)
+      end
+    end
+
+    def is_a_boolean?(value)
+      value.is_a?(TrueClass) || value.is_a?(FalseClass)
     end
   end
 end

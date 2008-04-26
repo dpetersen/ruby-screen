@@ -19,6 +19,12 @@ describe RubyScreen::Configuration::Parser do
     parse({ "startup_message" => "off" })
   end
 
+  it "should handle a customization that has a boolean value" do
+    @mock_configuration.should_receive(:add_customization).with("first", "on")
+    @mock_configuration.should_receive(:add_customization).with("second", "off")
+    parse({ "first" => true, "second" => false})
+  end
+
   it "should separate customizations and special settings" do
     @mock_configuration.should_receive(:add_customization).with("startup_message", "off")
     @mock_configuration.should_receive(:initial_directory=).with("~/something")
