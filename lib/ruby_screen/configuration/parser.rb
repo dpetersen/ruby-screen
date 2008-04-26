@@ -57,22 +57,16 @@ module RubyScreen::Configuration
     def initialize(preferences_hash, description)
       @preferences_hash, @description = preferences_hash, description
 
-      extract_special_settings
+      process_directories
       extract_windows
       add_customizations
     end
 
     protected
 
-    def extract_special_settings
-      ["initial_directory"].each { |setting| extract_special_setting(setting) }
-    end
-
-    def extract_special_setting(setting)
-      if @preferences_hash.has_key?(setting)
-        setter_method = "#{setting}=".to_sym
-        setting_value = @preferences_hash.delete(setting)
-        @description.send(setter_method, setting_value)
+    def process_directories
+      if @preferences_hash.has_key?("initial_directory")
+        @description.initial_directory = @preferences_hash.delete("initial_directory")
       end
     end
 

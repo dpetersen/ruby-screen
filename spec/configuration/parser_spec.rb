@@ -25,10 +25,10 @@ describe RubyScreen::Configuration::Parser do
     parse({ "first" => true, "second" => false})
   end
 
-  it "should separate customizations and special settings" do
+  it "should separate customizations and directory settings" do
     @mock_configuration.should_receive(:add_customization).with("startup_message", "off")
-    @mock_configuration.should_receive(:initial_directory=).with("~/something")
-    parse({ "startup_message" => "off", "initial_directory" => "~/something" })
+    @mock_configuration.should_receive(:initial_directory=).with("/something")
+    parse({ "startup_message" => "off", "initial_directory" => "/something" })
   end
 
   it "should handle windows" do
@@ -62,14 +62,14 @@ describe RubyScreen::Configuration::Parser do
     end
 
     it "should add slash prefix to additional arguments when initial_directory is defined without a trailling slash" do
-      @mock_configuration.should_receive(:initial_directory).ordered.and_return("~/something")
-      @mock_configuration.should_receive(:initial_directory=).with("~/something/one/two").ordered
+      @mock_configuration.should_receive(:initial_directory).ordered.and_return("/something")
+      @mock_configuration.should_receive(:initial_directory=).with("/something/one/two").ordered
       parse({}, ["one", "two"])
     end
 
     it "should not add slash prefix to additional arguments when initial_directory is defined with a trailing slash" do
-      @mock_configuration.should_receive(:initial_directory).ordered.and_return("~/something/")
-      @mock_configuration.should_receive(:initial_directory=).with("~/something/one/two").ordered
+      @mock_configuration.should_receive(:initial_directory).ordered.and_return("/something/")
+      @mock_configuration.should_receive(:initial_directory=).with("/something/one/two").ordered
       parse({}, ["one", "two"])
     end
   end
