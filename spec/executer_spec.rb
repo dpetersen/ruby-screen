@@ -12,21 +12,20 @@ describe RubyScreen::Executer do
     File.stub!(:exists?).and_return(true)
     File.stub!(:directory?).and_return(true)
     Dir.stub!(:chdir)
+    Dir.stub!(:tmpdir).and_return("/tmp")
     Kernel.stub!(:exec)
-
-    @original_home = ENV["HOME"]
-    ENV["HOME"] = "/path/to/file"
   end
 
-  after do
-    RubyScreen::Executer.new(@description)
-    ENV["HOME"] = @original_home
-  end
+  after { RubyScreen::Executer.new(@description) }
 
   describe "provided a valid Configuration::Description" do
     describe "#initialize" do
+      it "should request the file systems' temporary directory" do
+        Dir.should_receive(:tmpdir).any_number_of_times.and_return("/tmp")
+      end
+
       it "should open a file to store the compiled screen configuration" do
-        File.should_receive(:open).with("/path/to/file/.ruby-screen.compiled_configuration", "w").and_yield(@file_mock)
+        File.should_receive(:open).with("/tmp/.ruby-screen.compiled_configuration", "w").and_yield(@file_mock)
       end
 
       it "should check that the initial_directory from the Description is valid" do
@@ -46,7 +45,7 @@ describe RubyScreen::Executer do
       end
 
       it "should exec screen, passing the path to the compiled configuration" do
-        Kernel.should_receive(:exec).with("screen -c /path/to/file/.ruby-screen.compiled_configuration")
+        Kernel.should_receive(:exec).with("screen -c /tmp/.ruby-screen.compiled_configuration")
       end
     end
   end

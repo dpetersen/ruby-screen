@@ -1,3 +1,5 @@
+require 'tempfile'
+
 module RubyScreen
   class Executer
     def initialize(description)
@@ -18,7 +20,7 @@ module RubyScreen
     end
 
     def configuration_file_path
-      ENV["HOME"] + "/.ruby-screen.compiled_configuration"
+      Dir.tmpdir + "/.ruby-screen.compiled_configuration"
     end
   end
 end
