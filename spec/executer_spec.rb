@@ -4,7 +4,7 @@ describe RubyScreen::Executer do
   before do
     @description = mock("mock Configuration::Description")
     @description.stub!(:to_screen_configuration)
-    @description.stub!(:initial_directory)
+    @description.stub!(:working_directory)
 
     @file_mock = mock("mock File")
     @file_mock.stub!(:print)
@@ -28,14 +28,14 @@ describe RubyScreen::Executer do
         File.should_receive(:open).with("/tmp/.ruby-screen.compiled_configuration", "w").and_yield(@file_mock)
       end
 
-      it "should check that the initial_directory from the Description is valid" do
-        @description.stub!(:initial_directory).and_return("initial/directory/path")
+      it "should check that the working_directory from the Description is valid" do
+        @description.stub!(:working_directory).and_return("initial/directory/path")
         File.should_receive(:exists?).with("initial/directory/path").and_return(true)
         File.should_receive(:directory?).with("initial/directory/path").and_return(true)
       end
 
-      it "should attempt to change directory to correct initial directory" do
-        @description.should_receive(:initial_directory).any_number_of_times.and_return("initial/directory/path")
+      it "should attempt to change directory to correct working directory" do
+        @description.should_receive(:working_directory).any_number_of_times.and_return("initial/directory/path")
         Dir.should_receive(:chdir).with("initial/directory/path")
       end
 
@@ -50,9 +50,9 @@ describe RubyScreen::Executer do
     end
   end
 
-  describe "provided a Configuration::Description with an invalid initial directory" do
+  describe "provided a Configuration::Description with an invalid working directory" do
     before do
-      @description.stub!(:initial_directory).and_return("initial/directory/path")
+      @description.stub!(:working_directory).and_return("initial/directory/path")
       File.stub!(:exists?).and_return(false)
     end
 

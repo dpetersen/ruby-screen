@@ -27,8 +27,24 @@ describe RubyScreen::Configuration::Parser do
 
   it "should separate customizations and directory settings" do
     @mock_configuration.should_receive(:add_customization).with("startup_message", "off")
-    @mock_configuration.should_receive(:initial_directory=).with("/something")
-    parse({ "startup_message" => "off", "initial_directory" => "/something" })
+    @mock_configuration.should_receive(:working_directory=).with("/something")
+    parse({ "startup_message" => "off", "working_directory" => "/something" })
+  end
+
+  it "should append nested relative_directory entries to the current working_directory" do
+    @mock_configuration.should_receive(:working_directory=).with("something").ordered
+    @mock_configuration.should_receive(:append_directory).with("else").ordered
+    @mock_configuration.should_receive(:append_directory).with("final").ordered
+
+    parse({
+      "working_directory" => "something",
+      "second" => {
+        "relative_directory" => "else",
+        "third" => {
+          "relative_directory" => "final"
+        }
+      }
+    }, ["second", "third"])
   end
 
   it "should handle windows" do
@@ -55,21 +71,21 @@ describe RubyScreen::Configuration::Parser do
   end
 
   describe "provided additional arguments that do not match nested configurations" do
-    it "should append those arguments to initial_directory" do
-      @mock_configuration.should_receive(:initial_directory).ordered.and_return(nil)
-      @mock_configuration.should_receive(:initial_directory=).with("one/two").ordered
+    it "should append those arguments to working_directory" do
+      @mock_configuration.should_receive(:working_directory).ordered.and_return(nil)
+      @mock_configuration.should_receive(:working_directory=).with("one/two").ordered
       parse({}, ["one", "two"])
     end
 
-    it "should add slash prefix to additional arguments when initial_directory is defined without a trailling slash" do
-      @mock_configuration.should_receive(:initial_directory).ordered.and_return("/something")
-      @mock_configuration.should_receive(:initial_directory=).with("/something/one/two").ordered
+    it "should add slash prefix to additional arguments when working_directory is defined without a trailling slash" do
+      @mock_configuration.should_receive(:working_directory).ordered.and_return("/something")
+      @mock_configuration.should_receive(:working_directory=).with("/something/one/two").ordered
       parse({}, ["one", "two"])
     end
 
-    it "should not add slash prefix to additional arguments when initial_directory is defined with a trailing slash" do
-      @mock_configuration.should_receive(:initial_directory).ordered.and_return("/something/")
-      @mock_configuration.should_receive(:initial_directory=).with("/something/one/two").ordered
+    it "should not add slash prefix to additional arguments when working_directory is defined with a trailing slash" do
+      @mock_configuration.should_receive(:working_directory).ordered.and_return("/something/")
+      @mock_configuration.should_receive(:working_directory=).with("/something/one/two").ordered
       parse({}, ["one", "two"])
     end
   end

@@ -28,9 +28,31 @@ describe RubyScreen::Configuration::Description do
     end
   end
 
-  it "should be able to set initial directory" do
-    @configuration.initial_directory = "/my/dir/"
-    @configuration.initial_directory.should eql("/my/dir/")
+  it "should be able to set working_directory" do
+    @configuration.working_directory = "/my/dir/"
+    @configuration.working_directory.should eql("/my/dir/")
+  end
+
+  describe "#append_directory" do
+    it "should properly add directory names to the current working_directory" do
+      @configuration.working_directory = "/first"
+      @configuration.append_directory("second")
+      @configuration.working_directory.should eql("/first/second")
+    end
+
+    it "should handle directories that have leading and/or trailing slashes" do
+      @configuration.working_directory = "/first"
+      @configuration.append_directory("/second")
+      @configuration.working_directory.should eql("/first/second")
+      @configuration.append_directory("third/")
+      @configuration.working_directory.should eql("/first/second/third")
+    end
+
+    it "should work properly when no working_directory has been set" do
+      @configuration.working_directory.should be_nil
+      @configuration.append_directory("second")
+      @configuration.working_directory.should eql("second")
+    end
   end
 
   describe "windows" do

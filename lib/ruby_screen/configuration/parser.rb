@@ -15,9 +15,9 @@ module RubyScreen::Configuration
     protected
 
     def include_extra_arguments_as_directories
-      initial_directory = @description.initial_directory || ""
-      initial_directory << "/" unless initial_directory.empty? || initial_directory[-1].chr == "/"
-      @description.initial_directory = initial_directory + @iterator.arguments.join("/")
+      working_directory = @description.working_directory || ""
+      working_directory << "/" unless working_directory.empty? || working_directory[-1].chr == "/"
+      @description.working_directory = working_directory + @iterator.arguments.join("/")
     end
   end
 
@@ -65,8 +65,10 @@ module RubyScreen::Configuration
     protected
 
     def process_directories
-      if @preferences_hash.has_key?("initial_directory")
-        @description.initial_directory = @preferences_hash.delete("initial_directory")
+      if @preferences_hash.has_key?("working_directory")
+        @description.working_directory = @preferences_hash.delete("working_directory")
+      elsif @preferences_hash.has_key?("relative_directory")
+        @description.append_directory(@preferences_hash.delete("relative_directory"))
       end
     end
 
