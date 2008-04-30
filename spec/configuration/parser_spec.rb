@@ -71,21 +71,9 @@ describe RubyScreen::Configuration::Parser do
   end
 
   describe "provided additional arguments that do not match nested configurations" do
-    it "should append those arguments to working_directory" do
-      @mock_configuration.should_receive(:working_directory).ordered.and_return(nil)
-      @mock_configuration.should_receive(:working_directory=).with("one/two").ordered
-      parse({}, ["one", "two"])
-    end
-
-    it "should add slash prefix to additional arguments when working_directory is defined without a trailling slash" do
-      @mock_configuration.should_receive(:working_directory).ordered.and_return("/something")
-      @mock_configuration.should_receive(:working_directory=).with("/something/one/two").ordered
-      parse({}, ["one", "two"])
-    end
-
-    it "should not add slash prefix to additional arguments when working_directory is defined with a trailing slash" do
-      @mock_configuration.should_receive(:working_directory).ordered.and_return("/something/")
-      @mock_configuration.should_receive(:working_directory=).with("/something/one/two").ordered
+    it "should join those arguments and call Configuration#append_directory with them" do
+      @mock_configuration.should_receive(:append_directory).with("one").ordered
+      @mock_configuration.should_receive(:append_directory).with("two").ordered
       parse({}, ["one", "two"])
     end
   end

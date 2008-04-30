@@ -15,9 +15,7 @@ module RubyScreen::Configuration
     protected
 
     def include_extra_arguments_as_directories
-      working_directory = @description.working_directory || ""
-      working_directory << "/" unless working_directory.empty? || working_directory[-1].chr == "/"
-      @description.working_directory = working_directory + @iterator.arguments.join("/")
+      @iterator.arguments.each { |s| @description.append_directory(s) }
     end
   end
 
