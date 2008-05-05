@@ -2,79 +2,37 @@ require File.dirname(__FILE__) + '/../spec_helper.rb'
 
 describe RubyScreen::Configuration::Parser do
   before do
-    @mock_configuration = mock("mock Configuration")
-    RubyScreen::Configuration::Description.should_receive(:new).and_return(@mock_configuration)
+    @mock_arguments = mock("Arguments")
+    @mock_preferences_hash = mock("Preferences Hash")
+
+    @mock_iterator = mock("Iterator")
+    @mock_iterator.stub!(:each_applicable_configuration_block)
+    @mock_iterator.stub!(:arguments).and_return([])
+    RubyScreen::Configuration::Parser::Iterator.stub!(:new).and_return(@mock_iterator)
+
+    @mock_description = mock("Description")
+    RubyScreen::Configuration::Description.stub!(:new).and_return(@mock_description)
   end
 
-  def parse(hash, arguments = [])
-    RubyScreen::Configuration::Parser.new(arguments, hash).parse
+  after { RubyScreen::Configuration::Parser.parse(@mock_arguments, @mock_preferences_hash) }
+
+  it "should instantiate a new Iterator with the arguments and preferences_hash" do
+    RubyScreen::Configuration::Parser::Iterator.should_receive(:new).with(@mock_arguments, @mock_preferences_hash).and_return(@mock_iterator)
   end
 
-  it "should return a Configuration::Description" do
-    parse({}).should equal(@mock_configuration)
+  it "should instantiate a new Description" do
+    RubyScreen::Configuration::Description.should_receive(:new)
   end
 
-  it "should handle a simple customization" do
-    @mock_configuration.should_receive(:add_customization).with("startup_message", "off")
-    parse({ "startup_message" => "off" })
+  it "should call the Iterator#each_applicable_configuration_block and pass the yielded block to a BlockProcessor" do
+    mock_configuration_block = mock("Configuration Block")
+    @mock_iterator.should_receive(:each_applicable_configuration_block).and_yield(mock_configuration_block)
+    RubyScreen::Configuration::Parser::BlockProcessor.should_receive(:new).with(mock_configuration_block, @mock_description)
   end
 
-  it "should handle a customization that has a boolean value" do
-    @mock_configuration.should_receive(:add_customization).with("first", "on")
-    @mock_configuration.should_receive(:add_customization).with("second", "off")
-    parse({ "first" => true, "second" => false})
-  end
-
-  it "should separate customizations and directory settings" do
-    @mock_configuration.should_receive(:add_customization).with("startup_message", "off")
-    @mock_configuration.should_receive(:working_directory=).with("/something")
-    parse({ "startup_message" => "off", "working_directory" => "/something" })
-  end
-
-  it "should append nested relative_directory entries to the current working_directory" do
-    @mock_configuration.should_receive(:working_directory=).with("something").ordered
-    @mock_configuration.should_receive(:append_directory).with("else").ordered
-    @mock_configuration.should_receive(:append_directory).with("final").ordered
-
-    parse({
-      "working_directory" => "something",
-      "second" => {
-        "relative_directory" => "else",
-        "third" => {
-          "relative_directory" => "final"
-        }
-      }
-    }, ["second", "third"])
-  end
-
-  it "should handle windows" do
-    first_window_mock = mock("first window mock")
-    second_window_mock = mock("second window mock")
-    @mock_configuration.should_receive(:add_window).with(first_window_mock)
-    @mock_configuration.should_receive(:add_window).with(second_window_mock)
-    parse({ "windows" => [ first_window_mock, second_window_mock ] })
-  end
-
-  it "should use arguments to merge in nested customizations" do
-    @mock_configuration.should_receive(:add_customization).with("startup_message", "off").ordered
-    @mock_configuration.should_receive(:add_customization).with("startup_message", "on").ordered
-    @mock_configuration.should_receive(:add_customization).with("startup_message", "something else").ordered
-    parse({
-      "startup_message" => "off",
-      "second" => {
-        "startup_message" => "on",
-        "third" => {
-          "startup_message" => "something else"
-        }
-      }
-    }, ["second", "third"])
-  end
-
-  describe "provided additional arguments that do not match nested configurations" do
-    it "should join those arguments and call Configuration#append_directory with them" do
-      @mock_configuration.should_receive(:append_directory).with("one").ordered
-      @mock_configuration.should_receive(:append_directory).with("two").ordered
-      parse({}, ["one", "two"])
-    end
+  it "should call Description#append_directory for each additional argument" do
+    @mock_iterator.stub!(:arguments).and_return(["first", "second"])
+    @mock_description.should_receive(:append_directory).with("first").ordered
+    @mock_description.should_receive(:append_directory).with("second").ordered
   end
 end
