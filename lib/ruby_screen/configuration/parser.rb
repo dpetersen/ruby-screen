@@ -9,7 +9,6 @@ module RubyScreen::Configuration
       @description = Description.new
 
       @iterator.each_applicable_configuration_block { |block| BlockProcessor.new(block, @description) }
-      # TODO: move this into the Iterator
       include_extra_arguments_as_directories unless @iterator.arguments.empty?
 
       @description
