@@ -1,7 +1,5 @@
 module RubyScreen::Configuration::Parser
   class Iterator
-    attr_reader :arguments
-
     def initialize(arguments, preferences_hash)
       @arguments, @preferences_hash = arguments, preferences_hash
     end

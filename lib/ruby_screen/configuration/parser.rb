@@ -1,23 +1,29 @@
 $:.unshift File.dirname(__FILE__)
+require 'parser/hierarchy_navigator'
 require 'parser/iterator'
 require 'parser/block_processor'
 
 module RubyScreen::Configuration
   module Parser
     def self.parse(arguments, preferences_hash)
-      @iterator = Iterator.new(arguments, preferences_hash)
-      @description = Description.new
+      description = Description.new
 
-      @iterator.each_applicable_configuration_block { |block| BlockProcessor.new(block, @description) }
-      include_extra_arguments_as_directories unless @iterator.arguments.empty?
+      handle_additional_arguments(arguments, description)
 
-      @description
+      full_configuration_path = HierarchyNavigator.new(arguments, preferences_hash).hierarchy
+
+      iterator = Iterator.new(full_configuration_path, preferences_hash)
+      iterator.each_applicable_configuration_block { |block| BlockProcessor.new(block, description) }
+
+      description
     end
 
     protected
 
-    def self.include_extra_arguments_as_directories
-      @iterator.arguments.each { |s| @description.append_directory(s) }
+    def self.handle_additional_arguments(arguments, description)
+      if arguments.length > 1
+        arguments.slice!(1..-1).each { |s| description.append_directory(s) }
+      end
     end
   end
 end

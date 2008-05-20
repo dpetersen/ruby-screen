@@ -32,14 +32,4 @@ describe RubyScreen::Configuration::Parser::Iterator do
       @yielded[1].should == { "two" => 2 }
     end
   end
-
-  describe "with additional arguments" do
-    it "should contain only those arguments in the arguments array after iteration is complete" do
-      capture_yield(["nested", "add1", "add2"], { "one" => 1, "nested" => { "two" => 2 } })
-
-      @iterator.arguments.length.should eql(2)
-      @iterator.arguments[0].should eql("add1")
-      @iterator.arguments[1].should eql("add2")
-    end
-  end
 end
