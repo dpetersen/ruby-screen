@@ -14,7 +14,7 @@ lib/ruby_screen/configuration/description.rb
 lib/ruby_screen/configuration/generator.rb
 lib/ruby_screen/configuration/parser.rb
 lib/ruby_screen/configuration/parser/block_processor.rb
-lib/ruby_screen/configuration/parser/hierarchy_navigator.rb
+lib/ruby_screen/configuration/parser/nesting_hash.rb
 lib/ruby_screen/configuration/parser/iterator.rb
 log/debug.log
 script/destroy
