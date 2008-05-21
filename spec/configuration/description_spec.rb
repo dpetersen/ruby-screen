@@ -33,6 +33,12 @@ describe RubyScreen::Configuration::Description do
     @configuration.working_directory.should eql("/my/dir/")
   end
 
+  it "should call File.expand_path when setting a working_directory that begins with a '~'" do
+    File.should_receive(:expand_path).and_return("from_expand_path")
+    @configuration.working_directory = "~/path"
+    @configuration.working_directory.should eql("from_expand_path")
+  end
+
   describe "#append_directory" do
     it "should properly add directory names to the current working_directory" do
       @configuration.working_directory = "/first"
@@ -49,9 +55,16 @@ describe RubyScreen::Configuration::Description do
     end
 
     it "should work properly when no working_directory has been set" do
-      @configuration.working_directory.should be_nil
+      @configuration.working_directory.should eql("")
       @configuration.append_directory("second")
       @configuration.working_directory.should eql("second")
+    end
+
+    it "should correctly handle entries that begin with '~' and call File.expand_path on them" do
+      @configuration.working_directory = "something"
+      File.should_receive(:expand_path).with("~/path").and_return("from_expand_path")
+      @configuration.append_directory("~/path")
+      @configuration.working_directory.should eql("from_expand_path")
     end
   end
 

@@ -1,20 +1,20 @@
 module RubyScreen::Configuration
   class Description
-    attr_reader :customizations, :numbered_windows, :numberless_windows
-    attr_accessor :working_directory
+    attr_reader :customizations, :numbered_windows, :numberless_windows, :working_directory
 
     def initialize
       @customizations = {}
       @numberless_windows = []
       @numbered_windows = {}
+      @working_directory = ""
+    end
+
+    def working_directory=(directory)
+      process_directory(directory)
     end
 
     def append_directory(directory)
-      if @working_directory
-        @working_directory += "/" + strip_slashes(directory)
-      else
-        @working_directory = directory
-      end
+      process_directory(directory, !@working_directory.empty?)
     end
 
     def add_customization(key, value)
@@ -30,6 +30,17 @@ module RubyScreen::Configuration
     end
 
     protected
+
+    def process_directory(directory, append = false)
+      @working_directory =
+        if directory[0].chr == "~"
+          File.expand_path(directory)
+        elsif append
+          @working_directory + "/" + strip_slashes(directory)
+        else
+          directory
+        end
+    end
 
     def strip_slashes(s)
       s.gsub!(/^\//, "")
