@@ -1,10 +1,13 @@
+require 'erb'
 require 'yaml'
 
 module RubyScreen
   class PreferencesLoader
     def self.load
       begin
-        YAML.load_file(default_preferences_file)
+        configuration_string = IO.read(default_preferences_file)
+        processed_string = ERB.new(configuration_string).result
+        YAML.load(processed_string)
       rescue
         Kernel.abort <<-EOS
 There was a problem loading your preferences file.  I expect you to have an
