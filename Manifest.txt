@@ -29,9 +29,9 @@ spec/spec_helper.rb
 spec/configuration/description_spec.rb
 spec/configuration/parser_spec.rb
 spec/configuration/generator_spec.rb
-spec/configuration/block_processor_spec.rb
-spec/configuration/iterator_spec.rb
-spec/configuration/nesting_hash_spec.rb
+spec/configuration/parser/block_processor_spec.rb
+spec/configuration/parser/iterator_spec.rb
+spec/configuration/parser/nesting_hash_spec.rb
 tasks/deployment.rake
 tasks/environment.rake
 tasks/rspec.rake
