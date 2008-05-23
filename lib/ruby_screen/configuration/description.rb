@@ -22,7 +22,7 @@ module RubyScreen::Configuration
     end
 
     def add_window(options)
-      options.include?(:number) ? add_numbered_window(options) : add_numberless_window(options)
+      options.include?("number") ? add_numbered_window(options) : add_numberless_window(options)
     end
 
     def to_screen_configuration
@@ -53,7 +53,7 @@ module RubyScreen::Configuration
     end
 
     def add_numbered_window(options)
-      number = options.delete(:number)
+      number = options.delete("number")
       @numbered_windows[number] = options
     end
   end

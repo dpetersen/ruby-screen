@@ -70,18 +70,18 @@ describe RubyScreen::Configuration::Description do
 
   describe "windows" do
     it "should be able to add numberless windows" do
-      @configuration.add_window(:title => "server window", :command => "script/server")
+      @configuration.add_window("title" => "server window", "command" => "script/server")
       numberless_windows = @configuration.numberless_windows
       numberless_windows.length.should eql(1)
-      numberless_windows.first[:title].should eql("server window")
-      numberless_windows.first[:command].should eql("script/server")
+      numberless_windows.first["title"].should eql("server window")
+      numberless_windows.first["command"].should eql("script/server")
     end
 
     it "should be able to add numbered windows" do
-      @configuration.add_window(:title => "My Window", :number => 1)
+      @configuration.add_window("title" => "My Window", "number" => 1)
       numbered_windows = @configuration.numbered_windows
       numbered_windows.length.should eql(1)
-      numbered_windows[1][:title].should eql("My Window")
+      numbered_windows[1]["title"].should eql("My Window")
     end
   end
 end
