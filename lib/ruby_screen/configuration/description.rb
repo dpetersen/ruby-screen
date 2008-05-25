@@ -6,15 +6,15 @@ module RubyScreen::Configuration
       @customizations = {}
       @numberless_windows = []
       @numbered_windows = {}
-      @working_directory = ""
     end
 
     def working_directory=(directory)
+      @working_directory ||= ""
       process_directory(directory)
     end
 
     def append_directory(directory)
-      process_directory(directory, !@working_directory.empty?)
+      process_directory(directory, @working_directory)
     end
 
     def add_customization(key, value)

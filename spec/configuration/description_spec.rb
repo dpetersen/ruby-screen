@@ -28,15 +28,21 @@ describe RubyScreen::Configuration::Description do
     end
   end
 
-  it "should be able to set working_directory" do
-    @configuration.working_directory = "/my/dir/"
-    @configuration.working_directory.should eql("/my/dir/")
-  end
+  describe "working_directory" do
+    it "should be nil on initialization" do
+      @configuration.working_directory.should be_nil
+    end
 
-  it "should call File.expand_path when setting a working_directory that begins with a '~'" do
-    File.should_receive(:expand_path).and_return("from_expand_path")
-    @configuration.working_directory = "~/path"
-    @configuration.working_directory.should eql("from_expand_path")
+    it "should be able to be set" do
+      @configuration.working_directory = "/my/dir/"
+      @configuration.working_directory.should eql("/my/dir/")
+    end
+
+    it "should call File.expand_path when setting a working_directory that begins with a '~'" do
+      File.should_receive(:expand_path).and_return("from_expand_path")
+      @configuration.working_directory = "~/path"
+      @configuration.working_directory.should eql("from_expand_path")
+    end
   end
 
   describe "#append_directory" do
@@ -55,7 +61,7 @@ describe RubyScreen::Configuration::Description do
     end
 
     it "should work properly when no working_directory has been set" do
-      @configuration.working_directory.should eql("")
+      @configuration.working_directory.should be_nil
       @configuration.append_directory("second")
       @configuration.working_directory.should eql("second")
     end
