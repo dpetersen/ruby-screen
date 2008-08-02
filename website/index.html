@@ -1,11 +1,217 @@
-<html>
-	<head>
-		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-		<title>ruby_screen</title>
-		
-	</head>
-	<body id="body">
-		<p>This page has not yet been created for RubyGem <code>ruby_screen</code></p>
-		<p>To the developer: To generate it, update website/index.txt and run the rake task <code>website</code> to generate this <code>index.html</code> file.</p>
-	</body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <link rel="stylesheet" href="stylesheets/screen.css" type="text/css" media="screen" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>
+      RubyScreen
+  </title>
+  <script src="javascripts/rounded_corners_lite.inc.js" type="text/javascript"></script>
+<style>
+
+</style>
+  <script type="text/javascript">
+    window.onload = function() {
+      settings = {
+          tl: { radius: 10 },
+          tr: { radius: 10 },
+          bl: { radius: 10 },
+          br: { radius: 10 },
+          antiAlias: true,
+          autoPad: true,
+          validTags: ["div"]
+      }
+      var versionBox = new curvyCorners(settings, document.getElementById("version"));
+      versionBox.applyCornersToAll();
+    }
+  </script>
+</head>
+<body>
+<div id="main">
+
+    <h1>RubyScreen</h1>
+    <div id="version" class="clickable" onclick='document.location = "http://rubyforge.org/projects/ruby_screen"; return false'>
+      <p>Get Version</p>
+      <a href="http://rubyforge.org/projects/ruby_screen" class="numbers">0.9.0</a>
+    </div>
+    <p>RubyScreen is a utility for managing and launching <span class="caps">GNU</span> Screen configurations.  Though written in Ruby and requiring a valid Ruby installation, it should be useful for a developer in any language.  If you often find yourself opening up the same multiple windows and running various commands, or juggling multiple similar Screen configurations with various window setups, this may help.</p>
+<p>Usage is best described through a few examples, which are followed by detailed information on the available elements in the configuration file.</p>
+<h2>Installation</h2>
+<p>RubyScreen is packaged as a Ruby Gem, and requires a valid installation of Ruby along with the RubyGems package manager.  Rather than document that process, you&#8217;re likely to find more helpful instructions for installing those two components <a href="http://www.rubyonrails.org/down">here</a> at the Ruby on Rails installation page.</p>
+<p>Once you have gems, you&#8217;re just a command away:</p>
+gem install ruby-screen
+<p>On non-Windows systems, you may need to use <strong>sudo</strong> to elevate you privileges.</p>
+<p>To verify installation, try <strong>ruby-screen</strong> at your command prompt.  You should see a helpful message about your lack of configuration file.  You can build your own configuration file after reading the documentation below.</p>
+<h2>Examples</h2>
+<p>RubyScreen consists of a <a href="http://www.yaml.org/"><span class="caps">YAML</span></a> configuration file and a command line utility.  The configuration file must be located in your home directory and named <em>.ruby-screen.yml</em>.  The simplest example:</p>
+<pre><code>
+startup_message: off
+defscrollback: 5000
+</pre><p></code></p>
+<p>The command for launching RubyScreen is <strong>ruby-screen</strong>.  It will load your <span class="caps">YAML</span> configuration file and launch Screen with the appropriate options.  With the configuration file above, you&#8217;ll have no splash screen and a 5000 line scroll buffer.  Not exactly revolutionary.</p>
+<p>Let&#8217;s say you&#8217;re a web developer working on a cool new project.  You&#8217;re using your favorite text editor, watching some logs, keeping a window open for miscellaneous tasks.  Your configuration file would look something like this:</p>
+<pre><code>
+startup_message: off
+defscrollback: 5000
+
+cool_site:
+  working_directory: ~/web_projects/cool_site
+  windows:
+    -
+      title: Editor
+      command: vim .
+    -
+      title: Misc
+    -
+      title: Logs
+      number: 9
+      command: tail -f /var/log/web_server.log
+</pre><p></code></p>
+<p>Now you still have your generic configuration, along with an additional configuration for your cool project.  Running <strong>ruby-screen cool_site</strong> will move into your projects&#8217; directory and start a text editor, a window with a fresh command line, and a window tailing your server log.  The first two windows take whatever number Screen assigns to them (0 and 1 in this case), while the log window will always be assigned to number 9.</p>
+<p>That&#8217;s great, but you are working on more than just that one cool project.  You have multiple sites located in ~<em>/web</em>projects_, and they all have they all have similar needs: an editor, a terminal, and a log viewer.</p>
+<pre><code>
+startup_message: off
+defscrollback: 5000
+
+web_work:
+  working_directory: ~/web_projects
+  windows:
+    -
+      title: Editor
+      command: vim .
+    -
+      title: Misc
+    -
+      title: Logs
+      number: 9
+      command: tail -f /var/log/web_server.log
+</pre><p></code></p>
+<p>This configuration is identical to the last, except that it is a bit more generic.  The configuration named _cool_site_ is now _web_work_, and the <strong>working_directory</strong> now points to your generic projects directory.  When you use the <strong>ruby-screen</strong> command line utility, the first argument is usually going to refer to the name of one of your nested configurations, with any additional arguments being tacked on as directories relative to the <strong>working_directory</strong> specified in that configuration.</p>
+<p>If you had a couple of web projects you are working on, like ~<em>/web</em>projects/cool_project_, or ~<em>/web</em>projects/legacy_work_, those specific projects can be launched using the generic _web_work_ configuration by typing <strong>ruby-screen web_work cool_project</strong> and <strong>ruby-screen web_work legacy_work</strong> respectively.  Any new projects added to ~<em>/web</em>projects_ can be launched by name through the <strong>web_work</strong> configuration.</p>
+<p>Finally, let&#8217;s return to your cool site.  You have added some fancy new chat functionality to it, but that requires the chat server to be running during every development session.  Aside from the chat server, it&#8217;s the same as all of your other web projects.</p>
+<pre><code>
+startup_message: off
+defscrollback: 5000
+
+web_work:
+  working_directory: ~/web_projects
+  windows:
+    -
+      title: Editor
+      command: vim .
+    -
+      title: Misc
+    -
+      title: Logs
+      number: 9
+      command: tail -f /var/log/web_server.log
+
+  cool_site:
+    relative_directory: cool_site
+    windows:
+      -
+        title: Chat Server
+        command: /bin/my_awesome_chat_server
+</pre><p></code></p>
+<p>You&#8217;ve added on to the previous example and added a nested configuration, called _cool_site_.  It&#8217;s under _web_work_, and inherits all the Customizations and Windows defined above it, while defining a new window that will launch your chat server.  This nested configuration can be launched from the command line with <strong>ruby-screen cool_site</strong>.</p>
+<h2>The Configuration File</h2>
+<p>RubyScreen looks for a file in your home directory named <strong>.ruby-screen.yml</strong>.  It must be a valid <span class="caps">YAML</span> file.  It can contain multiple elements that will be translated into a Screen-compatible plain text configuration file, depending on the command line arguments that are passed in when RubyScreen is launched.</p>
+<h3>Customizations</h3>
+<p>The simplest element, customizations consist of simple key/value pairs.  Valid customizations can be found in the &#8220;Customization&#8221; section of the Screen manpage.</p>
+<pre><code>
+startup_message: off
+defscrollback: 5000
+</pre><p></code></p>
+<p>This will result in a Screen configuration without the welcoming splash page, with a 5000 line scroll buffer.</p>
+<p>(<span class="caps">YAML</span> veterans may wonder that the &#8216;off&#8217; value need not be quoted.  Pay no attention to the man behind the curtain.  It just doesn&#8217;t.)</p>
+<h3>Windows</h3>
+<p>Windows in Screen are somewhat analogous to tabs in a browser.  You can use window definitions to specify the windows you want open at launch.  You can optionally title and number them, as well as giving them an initial command to execute at launch.</p>
+<pre><code>
+windows:
+  -
+    title: Miscellaneous
+  -
+    number: 0
+    title: First Window
+  -
+    number: 1
+    title: Processes
+    command: top
+</pre><p></code></p>
+<p>This would result in 3 windows at launch.  Window 0 would be named <em>First Window</em> with a fresh command prompt, window 1 would be named <em>Processes</em> and would be running the <em>top</em> command.  A third window, named <em>Miscellaneous</em> would have a fresh command prompt, and be assigned to the first available number by Screen.</p>
+<p>The <strong>title</strong>, <strong>number</strong>, and <strong>command</strong> definitions are all optional, though you must supply one.   The value of the <strong>command</strong> is executed by Screen on launch, as-is.  If you decide that <em>rm -FR</em> is your command, it&#8217;s not going to stop you.</p>
+<h3>Nested Configurations</h3>
+<p>A nested configuration can be called by name from the ruby-screen command line utility.  They can contain the same elements as a top-level configuration.</p>
+<pre><code>
+startup_message: off
+defscrollback: 5000
+
+generic:
+  windows:
+    -
+      title: Miscellaneous
+    -
+      number: 1
+      title: Other Window
+
+  specific:
+    defscrollback: 1000
+    windows:
+      -
+        number: 1
+        title: Nested Window
+</pre><p></code></p>
+<p>Nested configuration names are passed as the first argument to the <strong>ruby-screen</strong> command line utility.  When this happens, the programs processes the configuration from the highest level down through the hierarchy to the configuration you specified, merging customizations and windows as it goes.  Any customization keys or numbered windows that are duplicated deeper in the hierarchy will override those above them.</p>
+<p>Calling the nested configuration named <em>specific</em> above would use the Windows and Customizations specified in the top level and <em>generic</em> configurations, but would override the number of lines of scroll buffer and the name of Window 1.</p>
+<p>There is no limit on how far you can nest, apart from your own sanity.</p>
+<h3>Paths</h3>
+<p>Use <strong>working_directory</strong> and <strong>relative_directory</strong> in instances where you will always want a certain configuration to launch with a specific working directory.  This is the equivalent to manually traversing to the intended directory before launching the Screen command.</p>
+<pre><code>
+startup_message: off
+
+web_server_edit:
+  working_directory: /usr/local/my_web_server
+  windows:
+    -
+      name: Config
+      command: vim conf/my_web_server.conf
+    -
+      name: Log
+      command: tail -f server.log
+</pre><p></code></p>
+<p>When running the <strong>web_server_edit</strong> configuration above, the commands will be executed in <em>/usr/local/my</em>web_server_.  Any new windows you open within Screen will also default to that directory.</p>
+<p>The working directory can also begin with a tilde character to indicate your home directory.  <em>~/projects</em> on a Linux system would translate to <em>/home/your</em>username/projects_.  It is suggested that you use the tilde or a full path for your <strong>working_directory</strong> settings, so that RubyScreen can work as intended no matter where it is called from.</p>
+<p>The <strong>relative_directory</strong> setting can be used in nested configurations and will be appended to the end of the current working directory.</p>
+<h3>Misc</h3>
+<p>Before your configuration file is loaded by the <span class="caps">YAML</span> library it is processed by <span class="caps">ERB</span>, a Ruby templating system.  Information on its syntax is available <a href="http://www.ruby-doc.org/stdlib/libdoc/erb/rdoc/">here</a>.  Any Ruby can be executed inside of <span class="caps">ERB</span>, so review any configuration files before executing.</p>
+<h2>Thanks</h2>
+<p>Thanks to the author of <a href="http://mikeburnscoder.wordpress.com/2007/06/21/my-rails-development-environment-version-1-vim-and-screen/">this</a> blog posting, which got the ball rolling for me on launching Screen with predefined windows and commands.</p>
+<h2>License</h2>
+<p>Copyright &#169; 2008</p>
+<p>Permission is hereby granted, free of charge, to any person obtaining<br />
+a copy of this software and associated documentation files (the<br />
+&#8217;Software&#8217;), to deal in the Software without restriction, including<br />
+without limitation the rights to use, copy, modify, merge, publish,<br />
+distribute, sublicense, and/or sell copies of the Software, and to<br />
+permit persons to whom the Software is furnished to do so, subject to<br />
+the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be<br />
+included in all copies or substantial portions of the Software.</p>
+<p><span class="caps">THE</span> <span class="caps">SOFTWARE</span> IS <span class="caps">PROVIDED</span> &#8216;AS IS&#8217;, <span class="caps">WITHOUT</span> <span class="caps">WARRANTY</span> OF <span class="caps">ANY</span> <span class="caps">KIND</span>,<br />
+<span class="caps">EXPRESS</span> OR <span class="caps">IMPLIED</span>, <span class="caps">INCLUDING</span> <span class="caps">BUT</span> <span class="caps">NOT</span> <span class="caps">LIMITED</span> TO <span class="caps">THE</span> <span class="caps">WARRANTIES</span> OF<br />
+<span class="caps">MERCHANTABILITY</span>, <span class="caps">FITNESS</span> <span class="caps">FOR</span> A <span class="caps">PARTICULAR</span> <span class="caps">PURPOSE</span> <span class="caps">AND</span> <span class="caps">NONINFRINGEMENT</span>.<br />
+IN NO <span class="caps">EVENT</span> <span class="caps">SHALL</span> <span class="caps">THE</span> <span class="caps">AUTHORS</span> OR <span class="caps">COPYRIGHT</span> <span class="caps">HOLDERS</span> BE <span class="caps">LIABLE</span> <span class="caps">FOR</span> <span class="caps">ANY</span><br />
+<span class="caps">CLAIM</span>, <span class="caps">DAMAGES</span> OR <span class="caps">OTHER</span> <span class="caps">LIABILITY</span>, <span class="caps">WHETHER</span> IN AN <span class="caps">ACTION</span> OF <span class="caps">CONTRACT</span>,<br />
+<span class="caps">TORT</span> OR <span class="caps">OTHERWISE</span>, <span class="caps">ARISING</span> <span class="caps">FROM</span>, <span class="caps">OUT</span> OF OR IN <span class="caps">CONNECTION</span> <span class="caps">WITH</span> <span class="caps">THE</span><br />
+<span class="caps">SOFTWARE</span> OR <span class="caps">THE</span> <span class="caps">USE</span> OR <span class="caps">OTHER</span> <span class="caps">DEALINGS</span> IN <span class="caps">THE</span> <span class="caps">SOFTWARE</span>.</p>
+    <p class="coda">
+      Don Petersen, 4th June 2008<br>
+      Theme extended from <a href="http://rb2js.rubyforge.org/">Paul Battley</a>
+    </p>
+</div>
+
+<!-- insert site tracking codes here, like Google Urchin -->
+
+</body>
 </html>
